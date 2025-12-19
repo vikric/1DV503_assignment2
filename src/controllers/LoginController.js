@@ -11,9 +11,34 @@ export class LoginController {
    * @param {Function} next - Express next middleware function.
    */
   index(req, res, next) {
-    res.render("login/index");
+    const flash = req.session.flash;
+    delete req.session.flash;
+
+    res.render("login/index", { flash });
   }
-  fisk(req, res, next) {
-    console.log("FISKE");
+
+  loginUser(req, res, next) {
+    try {
+      const { email, password } = req.body;
+
+      console.log(email, password);
+
+      // Check if email exist
+
+      // Create new user and hash password
+
+      // Send a success response
+
+      req.session.flash = {
+        type: "success",
+        text: `Login successful.`,
+      };
+      console.log(req.session.flash);
+      res.redirect("/");
+    } catch (error) {
+      console.error("Registration error:", error);
+      req.session.flash = { type: "danger", text: "Wrong Email or Password" };
+      res.render("login/index", { flash: req.session.flash });
+    }
   }
 }

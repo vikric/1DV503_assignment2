@@ -1,3 +1,4 @@
+@import './flash.css';
 html {
   height: 100%;
   background-image: url("../img/desktop.webp");
@@ -63,7 +64,7 @@ nav {
   transition: color 0.2s ease-in-out;
 }
 
-nav a:last-child {
+nav div {
   margin-left: auto;
 }
 

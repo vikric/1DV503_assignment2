@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { sessionOptions } from "./config/sessionOptions.js";
 import { router } from "./routes/router.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { flashMessages } from "./middleware/flashMiddleware.js";
 /* import mysql from "mysql2/promise"; */
 
 // Import middleware
@@ -37,6 +38,7 @@ try {
   app.use(session(sessionOptions));
 
   // Middleware
+  app.use(flashMessages);
   app.use(generateCsrfToken);
   app.use(validateCsrfToken);
 

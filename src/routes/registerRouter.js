@@ -5,14 +5,14 @@
  */
 
 import express from "express";
-import { LoginController } from "../controllers/LoginController.js";
+import { RegisterController } from "../controllers/RegisterController.js";
 
 export const router = express.Router();
 
-const controller = new LoginController();
+const controller = new RegisterController();
 
 router.get("/", (req, res, next) => controller.index(req, res, next));
 
 router.post("/", (req, res, next) =>
-  controller.loginUser(req, res, next)
+  controller.registerUser(req, res, next)
 );
