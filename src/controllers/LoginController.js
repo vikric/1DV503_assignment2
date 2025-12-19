@@ -1,3 +1,5 @@
+import { pool } from "../config/db.js";
+import bcrypt from "bcrypt";
 /**
  * Encapsulates a controller.
  */
@@ -10,25 +12,43 @@ export class LoginController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  index(req, res, next) {
+  async index(req, res, next) {
     const flash = req.session.flash;
     delete req.session.flash;
 
     res.render("login/index", { flash });
   }
 
-  loginUser(req, res, next) {
+  async findUser(email) {
+    const [rows] = await pool.query("Select * FROM members where email = ? ", [
+      email,
+    ]);
+    return rows[0];
+  }
+  async comparePassword(dbUser, enteredPassword) {
+    return bcrypt.compare(enteredPassword, dbUser.password);
+  }
+  async loginUser(req, res, next) {
     try {
       const { email, password } = req.body;
 
       console.log(email, password);
+      // Find user
+      const user = await this.findUser(email);
+      // Compare passwords
+      const compare = await this.comparePassword(user, password);
 
-      // Check if email exist
-
-      // Create new user and hash password
+      if (!compare) {
+        req.session.flash = { type: "danger", text: "Wrong Email or Password" };
+        res.render("login/index", { flash: req.session.flash });
+      }
 
       // Send a success response
 
+      req.session.user = {
+        id: user.id,
+        email: user.email,
+      };
       req.session.flash = {
         type: "success",
         text: `Login successful.`,

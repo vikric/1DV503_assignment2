@@ -1,3 +1,5 @@
+import { pool } from "../config/db.js";
+import { hashPassword, validateUser } from "../middleware/helper.js";
 /**
  * Encapsulates a controller.
  */
@@ -14,7 +16,20 @@ export class RegisterController {
     res.render("register/index");
   }
 
-  registerUser(req, res, next) {
+  async checkForExistingMember(req, res, email) {
+    const [rows] = await pool.query("Select * FROM members where email = ? ", [
+      email,
+    ]);
+    if (rows.length > 0) {
+      req.session.flash = {
+        type: "danger",
+        text: `Mail, ${email} already exist! `,
+      };
+      res.render("register/index", { flash: req.session.flash });
+    }
+  }
+
+  async registerUser(req, res, next) {
     try {
       const {
         firstName,
@@ -27,7 +42,7 @@ export class RegisterController {
         password,
       } = req.body;
 
-      console.log(
+      let user = {
         firstName,
         lastName,
         address,
@@ -35,13 +50,21 @@ export class RegisterController {
         zipCode,
         phoneNumber,
         email,
-        password
-      );
+        password,
+      };
+
+      validateUser(req, res, user);
 
       // Check if email exist
+      await this.checkForExistingMember(email);
 
       // Create new user and hash password
+      const newPass = await hashPassword(user.password);
+      console.log("old: ", user.password);
+      user.password = newPass;
 
+      console.log("New : ", user.password);
+      await this.createUser(user);
       // Send a success response
       req.session.flash = {
         type: "success",
@@ -50,9 +73,22 @@ export class RegisterController {
       res.redirect("/");
     } catch (error) {
       console.error("FEL");
-      /*       console.error("Registration error:", error);
-      req.session.flash = { type: "danger", text: "ERROR" };
-      res.redirect("/?registered=false"); */
     }
   }
+
+  async createUser(user) {
+    try {
+      const sql = `INSERT INTO members ( fname, lname, address, city, zip, phone, email, password ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+      const values = Object.values(user);
+
+      const [result] = await pool.query(sql, values);
+      return result;
+    } catch (error) {
+      console.error("❌ DB ERROR");
+      console.error(error.message);
+      throw error;
+    }
+  }
+
+
 }
