@@ -1,3 +1,40 @@
 <div class="container">
+  <% if (user) { %>
+
+  <form class="search" method="POST" action="/books">
+    <div class="dropdown">
+      <input
+        type="text"
+        placeholder="Humour"
+        id="dropdown-search"
+        onkeyup="bookSearch()"
+      />
+      <div id="dropdown-list" class="dropdown-content">
+        <!-- Dropdown results from server will be here -->
+      </div>
+      <button type="submit" name="filter" value="subject">
+        Filter by Subject
+      </button>
+    </div>
+
+    <input type="text" name="author" placeholder="Enter author name" />
+    <button type="submit" name="filter" value="author">Search by Author</button>
+
+    <input type="text" name="title" placeholder="Enter book title" />
+    <button type="submit" name="filter" value="title">Search by Title</button>
+  </form>
+
+  <!-- ================= ITEMS PER PAGE ================= -->
+  <form method="GET" action="/books" class="items-per-page">
+    <span>Items per page:</span>
+    <button name="limit" value="2">2</button>
+    <button name="limit" value="3">3</button>
+    <button name="limit" value="5">5</button>
+    <button name="limit" value="10">10</button>
+    <button name="limit" value="20">20</button>
+  </form>
+
+  <% } else { %>
   <h1>1DV503!</h1>
+  <% } %>
 </div>

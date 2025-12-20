@@ -33,11 +33,3 @@ export async function hashPassword(password) {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);
 }
-
-export async function comparePassword(email, password) {
-  const [rows] = await pool.query("Select * FROM members where email = ? ", [
-    email,
-  ]);
-  console.log(rows)
-  /* return bcrypt.compare(candidatePassword, password); */
-}

@@ -1,0 +1,24 @@
+
+
+<form class="search" method="GET" action="/books">
+  <div class="dropdown">
+    <input
+      type="text"
+      placeholder="Humour"
+      id="dropdown-search"
+      onkeyup="bookSearch()"
+    />
+    <div id="dropdown-list" class="dropdown-content">
+      <!-- Resultaten från servern kommer att visas här -->
+    </div>
+    <button type="submit" name="filter" value="subject">
+      Filter by Subject
+    </button>
+  </div>
+
+  <input type="text" name="author" placeholder="Enter author name" />
+  <button type="submit" name="filter" value="author">Search by Author</button>
+
+  <input type="text" name="title" placeholder="Enter book title" />
+  <button type="submit" name="filter" value="title">Search by Title</button>
+</form>

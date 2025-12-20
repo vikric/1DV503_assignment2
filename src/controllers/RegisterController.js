@@ -25,7 +25,7 @@ export class RegisterController {
         type: "danger",
         text: `Mail, ${email} already exist! `,
       };
-      res.render("register/index", { flash: req.session.flash });
+      return res.render("register/index", { flash: req.session.flash });
     }
   }
 
