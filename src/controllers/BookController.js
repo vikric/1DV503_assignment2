@@ -16,15 +16,58 @@ export class BookController {
   }
 
   async findAuthor(req, res, next) {
-    const { author } = req.body;
-    console.log(author);
-    const [rows] = await pool.query(
-      "Select * FROM books where author like ? limit 20 ",
-      ["%" + author + "%"]
-    );
-    /* console.log(rows[0]); */
-    console.log(rows);
-    return rows;
-    /* return rows[0]; */
+    const { author, title, filter, limit, subject, page } = req.query;
+
+    // 1. Sätt default-värden
+    const currentLimit = parseInt(limit) || 5;
+    const currentPage = parseInt(page) || 1;
+    const offset = (currentPage - 1) * currentLimit;
+    let viewData = { author: author || "", books: [] };
+    let query = "SELECT * FROM books WHERE 1=1 ";
+    let params = [];
+    console.log("STUFF", req.query);
+
+    if (author) {
+      query += "AND author LIKE ?";
+      params.push(`%${author}%`);
+    }
+
+    if (title) {
+      query += "AND title LIKE ?";
+      params.push(`%${title}%`);
+    }
+
+    if (subject) {
+      query += "AND subject LIKE ?";
+      params.push(`%${subject}%`);
+    }
+
+    query += " LIMIT ? OFFSET ?";
+    params.push(currentLimit, offset);
+
+    try {
+      const [rows] = await pool.query(query, params);
+
+      const [countRows] = await pool.query(
+        "SELECT COUNT(*) AS total FROM books WHERE 1=1",
+        []
+      );
+      const totalBooks = countRows[0].total;
+      const totalPages = Math.ceil(totalBooks / currentLimit);
+
+      res.render("home/index", {
+        viewData: {
+          books: rows,
+          totalPages: totalPages,
+          currentPage: currentPage,
+          limit: currentLimit,
+          author: author,
+          title: title,
+          subject: subject,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 }

@@ -1,7 +1,7 @@
 <div class="container">
   <% if (user) { %>
 
-  <form class="search" method="POST" action="/books">
+  <form class="search" method="GET" action="/books">
     <div class="dropdown">
       <input
         type="text"
@@ -17,24 +17,41 @@
       </button>
     </div>
 
-    <input type="text" name="author" placeholder="Enter author name" />
+    <input type="text" name="author" placeholder="Enter author name" value />
     <button type="submit" name="filter" value="author">Search by Author</button>
 
     <input type="text" name="title" placeholder="Enter book title" />
     <button type="submit" name="filter" value="title">Search by Title</button>
-  </form>
 
-  <!-- ================= ITEMS PER PAGE ================= -->
-  <form method="GET" action="/books" class="items-per-page">
-    <span>Items per page:</span>
-    <button name="limit" value="2">2</button>
-    <button name="limit" value="3">3</button>
-    <button name="limit" value="5">5</button>
-    <button name="limit" value="10">10</button>
-    <button name="limit" value="20">20</button>
+    <hr />
+    <div class="items-per-page">
+      <div><span>Items per page:</span></div>
+      <button name="limit" value="2">2</button>
+      <button name="limit" value="3">3</button>
+      <button name="limit" value="5">5</button>
+      <button name="limit" value="10">10</button>
+      <button name="limit" value="20">20</button>
+    </div>
   </form>
-
-  <% } else { %>
-  <h1>1DV503!</h1>
-  <% } %>
 </div>
+<ul>
+  <% viewData?.books.forEach(book => { %>
+  <li><%= book.title %> (by <%= book.author %>)</li>
+  <% }) %>
+</ul>
+
+<div>
+  <h2>Books</h2>
+  <% viewData?.books.forEach(book => { %>
+  <div>
+    <p><strong><%= book.title %></strong> by <%= book.author %></p>
+    <p>ISBN: <%= book.isbn %></p>
+    <p>Price: <%= book.price %></p>
+    <p>Subject: <%= book.subject %></p>
+  </div>
+  <% }) %>
+</div>
+
+<% } else { %>
+<h1>1DV503!</h1>
+<% } %>
