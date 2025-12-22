@@ -33,23 +33,21 @@
       <button name="limit" value="20">20</button>
     </div>
   </form>
-</div>
-<ul>
-  <% viewData?.books.forEach(book => { %>
-  <li><%= book.title %> (by <%= book.author %>)</li>
-  <% }) %>
-</ul>
 
-<div>
-  <h2>Books</h2>
-  <% viewData?.books.forEach(book => { %>
-  <div>
-    <p><strong><%= book.title %></strong> by <%= book.author %></p>
-    <p>ISBN: <%= book.isbn %></p>
-    <p>Price: <%= book.price %></p>
-    <p>Subject: <%= book.subject %></p>
+  <div class="book-list">
+    <h2>Books</h2>
+    <% viewData?.books.forEach(book => { %>
+    <div class="single-book">
+      <p><strong>Title: </strong><%= book.title %></p>
+      <p><strong>Author: </strong> <%= book.author %></p>
+      <p><strong>ISBN: </strong> <%= book.isbn %></p>
+      <p><strong>Price: </strong> <%= book.price %></p>
+      <p><strong>Subject: </strong> <%= book.subject %></p>
+      <input type="text" name="amount" placeholder="1" />
+      <button name="book_amount" value="amount">Add to Cart</button>
+    </div>
+    <% }) %>
   </div>
-  <% }) %>
 </div>
 
 <% } else { %>
