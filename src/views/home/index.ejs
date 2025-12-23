@@ -2,6 +2,7 @@
   <% if (user) { %>
 
   <form class="search" method="GET" action="/books">
+    <h2>Our Books</h2>
     <div class="dropdown">
       <input
         type="text"
@@ -23,7 +24,6 @@
     <input type="text" name="title" placeholder="Enter book title" />
     <button type="submit" name="filter" value="title">Search by Title</button>
 
-    <hr />
     <div class="items-per-page">
       <div><span>Items per page:</span></div>
       <button name="limit" value="2">2</button>
@@ -36,17 +36,68 @@
 
   <div class="book-list">
     <h2>Books</h2>
+    <p>Page <%= viewData.currentPage %> of <%= viewData.totalPages %></p>
+
     <% viewData?.books.forEach(book => { %>
-    <div class="single-book">
-      <p><strong>Title: </strong><%= book.title %></p>
-      <p><strong>Author: </strong> <%= book.author %></p>
-      <p><strong>ISBN: </strong> <%= book.isbn %></p>
-      <p><strong>Price: </strong> <%= book.price %></p>
-      <p><strong>Subject: </strong> <%= book.subject %></p>
-      <input type="text" name="amount" placeholder="1" />
-      <button name="book_amount" value="amount">Add to Cart</button>
-    </div>
+    <form method="POST" action="/books">
+      <div class="single-book">
+        <p><strong>Title: </strong><%= book.title %></p>
+        <p><strong>Author: </strong> <%= book.author %></p>
+        <p><strong>ISBN: </strong> <%= book.isbn %></p>
+        <p><strong>Price: </strong> <%= book.price %></p>
+        <p><strong>Subject: </strong> <%= book.subject %></p>
+
+        <input type="text" name="amount" placeholder="1" />
+        <button name="book_amount" value="amount">Add to Cart</button>
+      </div>
+    </form>
     <% }) %>
+    <div class="pagination">
+      <% if (viewData.currentPage > 1) { %>
+      <form action="/books" method="GET" style="display: inline">
+        <input type="hidden" name="author" value="<%= viewData.author %>" />
+        <input type="hidden" name="title" value="<%= viewData.title %>" />
+        <input type="hidden" name="subject" value="<%= viewData.subject %>" />
+        <input type="hidden" name="limit" value="<%= viewData.limit %>" />
+        <input
+          type="hidden"
+          name="page"
+          value="<%= viewData.currentPage - 1 %>"
+        />
+        <button type="submit">Previous</button>
+      </form>
+      <% } %>
+
+      <!-- <Pages> -->
+      <% for (let i = 1; i <= viewData.totalPages; i++) { %>
+      <form action="/books" method="GET">
+        <input type="hidden" name="author" value="<%= viewData.author %>" />
+        <input type="hidden" name="title" value="<%= viewData.title %>" />
+        <input type="hidden" name="subject" value="<%= viewData.subject %>" />
+        <input type="hidden" name="limit" value="<%= viewData.limit %>" />
+        <input type="hidden" name="page" value="<%= i %>" />
+        <button
+          type="submit"
+          class="<%= i === viewData.currentPage ? 'active' : '' %>"
+        >
+          <%= i %>
+        </button>
+      </form>
+      <% } %> <% if (viewData.currentPage < viewData.totalPages) { %>
+      <form action="/books" method="GET">
+        <input type="hidden" name="author" value="<%= viewData.author %>" />
+        <input type="hidden" name="title" value="<%= viewData.title %>" />
+        <input type="hidden" name="subject" value="<%= viewData.subject %>" />
+        <input type="hidden" name="limit" value="<%= viewData.limit %>" />
+        <input
+          type="hidden"
+          name="page"
+          value="<%= viewData.currentPage + 1 %>"
+        />
+        <button type="submit">Next</button>
+      </form>
+      <% } %>
+    </div>
   </div>
 </div>
 

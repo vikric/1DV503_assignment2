@@ -154,3 +154,22 @@ nav button {
 .single-book input {
   width: 50px;
 }
+
+.pagination {
+  display: flex;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #ffffff;
+}
+
+.pagination button.active {
+  background-color: #1d6cc1;
+  color: white;
+}
+
+.pagination button:hover {
+  background-color: #635353;
+}

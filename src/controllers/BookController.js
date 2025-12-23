@@ -16,28 +16,31 @@ export class BookController {
   }
 
   async findAuthor(req, res, next) {
-    const { author, title, filter, limit, subject, page } = req.query;
+    const { author, title, limit, subject, page } = req.query;
 
-    // 1. Sätt default-värden
-    const currentLimit = parseInt(limit) || 5;
+    // Set default-values
+    const currentLimit = parseInt(limit) || 2;
     const currentPage = parseInt(page) || 1;
     const offset = (currentPage - 1) * currentLimit;
-    let viewData = { author: author || "", books: [] };
     let query = "SELECT * FROM books WHERE 1=1 ";
+    let countQuery = "SELECT COUNT(*) AS total FROM books WHERE 1=1 ";
     let params = [];
     console.log("STUFF", req.query);
 
     if (author) {
+      countQuery += "AND author LIKE ?";
       query += "AND author LIKE ?";
       params.push(`%${author}%`);
     }
 
     if (title) {
+      countQuery += "AND title LIKE ?";
       query += "AND title LIKE ?";
       params.push(`%${title}%`);
     }
 
     if (subject) {
+      countQuery += "AND subject LIKE ?";
       query += "AND subject LIKE ?";
       params.push(`%${subject}%`);
     }
@@ -46,28 +49,32 @@ export class BookController {
     params.push(currentLimit, offset);
 
     try {
+      // Get books from filter
       const [rows] = await pool.query(query, params);
 
-      const [countRows] = await pool.query(
-        "SELECT COUNT(*) AS total FROM books WHERE 1=1",
-        []
-      );
+      // Count books from filter
+      const [countRows] = await pool.query(countQuery, params);
+
+      // Get total book amount from filter
       const totalBooks = countRows[0].total;
       const totalPages = Math.ceil(totalBooks / currentLimit);
 
+      const viewData = {
+        books: rows,
+        totalPages: totalPages,
+        currentPage: currentPage,
+        limit: currentLimit,
+        author: author,
+        title: title,
+        subject: subject,
+      };
       res.render("home/index", {
-        viewData: {
-          books: rows,
-          totalPages: totalPages,
-          currentPage: currentPage,
-          limit: currentLimit,
-          author: author,
-          title: title,
-          subject: subject,
-        },
+        viewData,
       });
     } catch (error) {
       next(error);
     }
   }
+
+  createCountQuery() {}
 }
