@@ -32,24 +32,21 @@ export class LoginController {
     try {
       const { email, password } = req.body;
 
-      console.log(email, password);
       // Find user
       const user = await this.findUser(email);
-      console.log(1);
       // Compare passwords
       const compare = await this.comparePassword(user, password);
-      console.log(2);
-      console.log(compare)
+      console.log(compare);
       if (!compare) {
         req.session.flash = { type: "danger", text: "Wrong Email or Password" };
         return res.render("login/index", { flash: req.session.flash });
-      } 
-      console.log(3)
+      }
+      console.log(3);
 
       // Send a success response
       req.session.user = {
         name: user.fname[0].toUpperCase() + user.fname.slice(1),
-        id: user.id,
+        id: user.userid,
         email: user.email,
       };
       req.session.flash = {

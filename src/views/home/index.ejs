@@ -35,10 +35,10 @@
   </form>
 
   <div class="book-list">
+    <% if (viewData?.book) { %>
     <h2>Books</h2>
     <p>Page <%= viewData.currentPage %> of <%= viewData.totalPages %></p>
-
-    <% viewData?.books.forEach(book => { %>
+    <% } %> <% viewData?.books.forEach(book => { %>
     <form method="POST" action="/books">
       <div class="single-book">
         <p><strong>Title: </strong><%= book.title %></p>
@@ -47,7 +47,12 @@
         <p><strong>Price: </strong> <%= book.price %></p>
         <p><strong>Subject: </strong> <%= book.subject %></p>
 
-        <input type="text" name="amount" placeholder="1" />
+        <input type="hidden" name="user" value="<%= user.name %>" />
+        <input type="hidden" name="id" value="<%= user.id %>" />
+        <input type="hidden" name="email" value="<%= user.email %>" />
+        <input type="hidden" name="isbn" value="<%= book.isbn %>" />
+        <input type="text" name="amount" value="1" />
+
         <button name="book_amount" value="amount">Add to Cart</button>
       </div>
     </form>

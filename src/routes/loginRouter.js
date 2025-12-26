@@ -16,9 +16,5 @@ router.get("/", (req, res, next) => controller.index(req, res, next));
 router.post("/", (req, res, next) => controller.loginUser(req, res, next));
 router.post("/logout", (req, res, next) => {
   req.session.destroy();
-  res.render("home/index", {
-    viewData: {
-      books: [],
-    },
-  });
+  res.redirect("/");
 });

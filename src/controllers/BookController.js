@@ -76,5 +76,15 @@ export class BookController {
     }
   }
 
-  createCountQuery() {}
+  async addToCart(req, res, next) {
+    console.log("BODY", req.body);
+
+    console.log(req.session.user.id);
+
+    res.render("home/index", {
+      viewData: {
+        books: [],
+      },
+    });
+  }
 }
