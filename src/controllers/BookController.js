@@ -25,7 +25,6 @@ export class BookController {
     let query = "SELECT * FROM books WHERE 1=1 ";
     let countQuery = "SELECT COUNT(*) AS total FROM books WHERE 1=1 ";
     let params = [];
-    console.log("STUFF", req.query);
 
     if (author) {
       countQuery += "AND author LIKE ?";
@@ -59,6 +58,12 @@ export class BookController {
       const totalBooks = countRows[0].total;
       const totalPages = Math.ceil(totalBooks / currentLimit);
 
+      const maxPagesToShow = 8;
+
+      const startPage = Math.max(1, currentPage - 1);
+
+      const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+
       const viewData = {
         books: rows,
         totalPages: totalPages,
@@ -67,6 +72,8 @@ export class BookController {
         author: author,
         title: title,
         subject: subject,
+        startPage,
+        endPage,
       };
       res.render("home/index", {
         viewData,
@@ -77,14 +84,45 @@ export class BookController {
   }
 
   async addToCart(req, res, next) {
-    console.log("BODY", req.body);
+    /* const userid = req.session.user.id; */
+    const { id, isbn, amount } = req.body;
+    const qty = parseInt(amount);
 
-    console.log(req.session.user.id);
+    try {
+      // Check if book exist in cart
+      const checkSql = `
+      SELECT qty 
+      FROM cart 
+      WHERE userid = ? AND isbn = ?
+    `;
 
-    res.render("home/index", {
-      viewData: {
-        books: [],
-      },
-    });
+      const [rows] = await pool.query(checkSql, [id, isbn]);
+
+      // Update Cart if book already exist
+      if (rows.length > 0) {
+        const updateSql = `
+        UPDATE cart 
+        SET qty = qty + ? 
+        WHERE userid = ? AND isbn = ?
+      `;
+
+        await pool.query(updateSql, [qty, id, isbn]);
+      } else {
+        const insertSql = `INSERT INTO cart (userid, isbn, qty) 
+        VALUES (?, ?, ?)`;
+        await pool.query(insertSql, [id, isbn, qty]);
+      }
+      const data = {
+        userid: id,
+        isbn,
+        qty: amount,
+      };
+
+      res.redirect("/books");
+    } catch (error) {
+      console.error("❌ DB ERROR");
+      console.error(error.message);
+      throw error;
+    }
   }
 }

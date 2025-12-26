@@ -45,7 +45,7 @@ export class LoginController {
 
       // Send a success response
       req.session.user = {
-        name: user.fname[0].toUpperCase() + user.fname.slice(1),
+        name: user.fname/* .toUpperCase() + user.fname.slice(1) */,
         id: user.userid,
         email: user.email,
       };

@@ -1,0 +1,30 @@
+<h1>Shopping Cart</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>ISBN</th>
+      <th>Title</th>
+      <th>$</th>
+      <th>Quantity</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% cartItems.forEach(item => { %>
+    <tr>
+      <td><%= item.isbn %></td>
+      <td><%= item.title %></td>
+      <td>$<%= item.price %></td>
+      <td><%= item.qty %></td>
+      <td>$<%= item.row_total %></td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<h2>Total: $<%= total %></h2>
+
+<form action="/checkout" method="POST">
+  <button>Checkout</button>
+</form>

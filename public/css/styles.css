@@ -173,3 +173,7 @@ nav button {
 .pagination button:hover {
   background-color: #635353;
 }
+
+.capitalize {
+  text-transform: capitalize;
+}
