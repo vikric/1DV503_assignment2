@@ -87,6 +87,7 @@ export class BookController {
     /* const userid = req.session.user.id; */
     const { id, isbn, amount } = req.body;
     const qty = parseInt(amount);
+    console.log(amount)
 
     try {
       // Check if book exist in cart

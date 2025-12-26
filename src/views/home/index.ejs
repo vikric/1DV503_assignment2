@@ -3,21 +3,10 @@
 
   <form class="search" method="GET" action="/books">
     <h2>Our Books</h2>
-    <div class="dropdown">
-      <input
-        type="text"
-        name="subject"
-        placeholder="Humour"
-        id="dropdown-search"
-        onkeyup="bookSearch()"
-      />
-      <div id="dropdown-list" class="dropdown-content">
-        <!-- Dropdown results from server will be here -->
-      </div>
-      <button type="submit">Filter by Subject</button>
-        Filter by Subject
-      </button>
-    </div>
+    <input type="text" name="subject" placeholder="Enter Subject" value />
+    <button type="submit" name="filter" value="subject">
+      Search by Subject
+    </button>
 
     <input type="text" name="author" placeholder="Enter author name" value />
     <button type="submit" name="filter" value="author">Search by Author</button>
@@ -52,7 +41,7 @@
         <input type="hidden" name="id" value="<%= user.id %>" />
         <input type="hidden" name="email" value="<%= user.email %>" />
         <input type="hidden" name="isbn" value="<%= book.isbn %>" />
-        <input type="text" name="amount" value="1" />
+        <input type="number" name="amount" value="1" min="0" />
 
         <button name="book_amount" value="amount">Add to Cart</button>
       </div>
@@ -82,13 +71,14 @@
         <input type="hidden" name="subject" value="<%= viewData.subject %>" />
         <input type="hidden" name="limit" value="<%= viewData.limit %>" />
         <input type="hidden" name="page" value="<%= i %>" />
-        <button type="submit" class="<%= i === viewData.currentPage ? 'active' : '' %>"
+        <button
+          type="submit"
+          class="<%= i === viewData.currentPage ? 'active' : '' %>"
         >
           <%= i %>
         </button>
       </form>
-      <% } %> 
-      <% if (viewData.currentPage < viewData.totalPages) { %>
+      <% } %> <% if (viewData.currentPage < viewData.totalPages) { %>
       <form action="/books" method="GET">
         <input type="hidden" name="author" value="<%= viewData.author %>" />
         <input type="hidden" name="title" value="<%= viewData.title %>" />
