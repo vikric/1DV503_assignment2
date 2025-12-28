@@ -15,7 +15,7 @@ export class BookController {
     res.render("member/index");
   }
 
-  async findAuthor(req, res, next) {
+  async bookSearch(req, res, next) {
     const { author, title, limit, subject, page } = req.query;
 
     // Set default-values
@@ -42,6 +42,10 @@ export class BookController {
       countQuery += "AND subject LIKE ?";
       query += "AND subject LIKE ?";
       params.push(`%${subject}%`);
+    }
+
+    if (!author && !title && !subject) {
+      return res.render("home/index", { viewData: { books: [] } });
     }
 
     query += " LIMIT ? OFFSET ?";
@@ -87,7 +91,7 @@ export class BookController {
     /* const userid = req.session.user.id; */
     const { id, isbn, amount } = req.body;
     const qty = parseInt(amount);
-    console.log(amount)
+    console.log(amount);
 
     try {
       // Check if book exist in cart
@@ -113,10 +117,9 @@ export class BookController {
         VALUES (?, ?, ?)`;
         await pool.query(insertSql, [id, isbn, qty]);
       }
-      const data = {
-        userid: id,
-        isbn,
-        qty: amount,
+      req.session.flash = {
+        type: "success",
+        text: `Book with ISBN: ${isbn} to cart.`,
       };
 
       res.redirect("/books");

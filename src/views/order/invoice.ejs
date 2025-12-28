@@ -5,24 +5,25 @@
 
   <h4>Shipping Address</h4>
   <p class="capitalize">
-    <strong>Name:</strong> <%= member.fname  %> <%= member.lname  %><br>
-    <strong>Address:</strong> <%= member.address %><br>
+    <strong>Name:</strong> <%= member.fname %> <%= member.lname %><br />
+    <strong>Address:</strong> <%= member.address %><br />
     <%= member.city %>, <%= member.zip %>
   </p>
 
   <h4>Books</h4>
-  <table>
-    <thead>
-      <tr>
-        <th>ISBN</th>
-        <th>Title</th>
-        <th>$</th>
-        <th>Quantity</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% cartItems.forEach(item => { %>
+  <div class="cart-table-wrapper">
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>ISBN</th>
+          <th>Title</th>
+          <th>$</th>
+          <th>Quantity</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% cartItems.forEach(item => { %>
         <tr>
           <td><%= item.isbn %></td>
           <td><%= item.title %></td>
@@ -30,9 +31,10 @@
           <td><%= item.qty %></td>
           <td>$<%= item.amount %></td>
         </tr>
-      <% }) %>
-    </tbody>
-  </table>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
 
   <h3>Order Total: $<%= orderTotal %></h3>
 
