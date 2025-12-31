@@ -2,7 +2,7 @@ import mysql from "mysql2/promise";
 
 export const pool = mysql.createPool({
   host: "localhost",
-  user: "root",
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: "book_store",
   waitForConnections: true,
